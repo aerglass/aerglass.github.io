@@ -42,6 +42,10 @@ a:active {
       <li> Day 9. Colisions </li>
     </ui>
     <table bgcolor="red"><tr><td>DS IS COMPLEX, THIS GUIDE IS NOT RESPONSABLE IF YOUR COMPUTER OR DS DIES. </tr></td></table>
+      <table bgcolor="grau"><tr><td>This guide is based on this <a href="https://gbatemp.net/threads/ds-programming-for-newbies.322106/">one, on GBATEMP</a><br>
+        some sections are actually copy-paste, because that guide is written well.
+        </tr></td></table>
+                                       <hr>
                                        <hr>
   <h1> Introduction </h1> </p>
   Hi, I am TheCatHacker562, I am DS, 3DS, Switch Dev, i do cool ds things using libnds and nightfox's lib for libnds <br>
@@ -78,7 +82,152 @@ it should make a .nds file in the folder.<br>
 decompress the DesMuMe <br>
 load the .nds file to DesMume, it should appear "Hello World" <br>
 DesMuMe is a Nintendo DS Emulator, We will use it ALOT </p>
+<h1> Day 5:RAM and VRAM </h1></p>
+Before we properly dive into the use of graphics and various other resources, first we need to learn a bit about how the DS manages memory. <br>
+As you may or may not know, the DS has 4MB of Main RAM memory, shared between its two processors – the ARM9 and the ARM7. <br>
+RAM is where your entire Binary will be stored during its execution and naturally it has to be used efficiently, as it isn’t a whole lot of space. <br>
+For a long time, it was a huge bottleneck for homebrew programmers, but then came libraries such as FATlib, NitroFS and other file systems that facilitated streaming resources into RAM, nullifying this problem by the use of buffering.<br>
+We won’t tackle that just yet, seeing that conveniently, NightFoxLib does it for us automatically, however we will talk about their use later-on when introducing Saving and Loading. <br>
+Let’s move on to the next important part of the DS’s memory – the VRAM.</p>
 
+The fact that your resources are stored in RAM isn’t always enough to utilize them. Graphics have to fit within Video RAM before they are displayed. <br>
+The size of VRAM is only 656KiB altogether, which is quite a bottleneck, considering the way it is structured. <br>
+The memory is divided into several banks, all of which have different functions assigned to them. Let’s have a look at this diagram:</p>
+<img src="imgs/vramdsgrap.png"></p>
+This should help you imagine how the system works. Again, conveniently, NightFoxLib will deal with the VRAM banks for us, but I figured that it’s best if you have a look at it to understand why sometimes you run out of VRAM blocks when using graphics.
+
+To combat this inheritent problem of lack of space, Tiled graphics have been introduced back in the olden days. <br>
+They take much less space than standard backgrounds, and these will be the first for us to tackle – specifically, tiled backgrounds converted with the GRIT (GBA Raster Image Transmogrifier) tool. <br>
+<h1> Day 6: Backgrounds </h1></p>
+I specifically picked NightFox Lib as the library of choice for this guide, simply because its use is incredibly simple and because the library is still in active developed, not to mention that it's well-documented. <br>
+I believe that we will all get the quickest and best results if we focus on it as our graphics library, so let's get to it.</p>
+
+
+Integrating the library with your Projects is incredibly easy – all you really have to do is copy/paste the Template provided in the lib’s folder into Your project… and that’s it!<br>
+There are further integration options that you may choose that will be discussed in the second part of this chapter.<br>
+As you’ve already noticed, a few new folder have appeared in your Project Folder – those will be used to store various Resources.<br>
+Visual Studio is capable of linking those folders to particular elements of your Solutions. <br>
+By doing that, you will always see the contents of your folders which will make coding this one bit easier. <br>
+Including those folders in your solution is pretty straight-forward, but we’ll leave that for later as I already know you all can’t possibly wait any longer to get to the juicy parts.<br>
+
+For now, attempt to compile the Template. If everything goes well and without hiccups, you’ve just successfully included NightFox Lib in your Project – well done!<br>
+<h1> GRIT </h1>
+
+Now that we’ve included NightFox Lib in our project and we’re all acustomed with how RAM and VRAM works, we can finally move on to what we’re really interested in – using Graphics in our games and applications. <br>
+As I already mentioned, the DS mostly uses Tiled Graphics – they’re much easier to render and their size is lower, thus they don’t clutter the RAM and VRAM as much. <br>
+To convert an image to that kind of a format, we will be using GRIT. <br>
+The name stands for GBA RASTER IMAGE TRANSMOGRIFIER and it has been the tool of choice for both GBA and NDS development due to the variety of functions it offers.<br>
+It’s been created and maintained by Jasper Vijn and it’s available at http://www.coranac.com/projects/grit/ <br>
+however you already have it as it’s the default tool used by NightFox Lib – you can find it in the Tools directory at nflib/tools.</p>
+
+There, you will find several Batch files that we will be using to convert our Bitmaps with. Those include:<br>
+Convert_Affine - this Batch file will convert all the graphics in the BMP folder into Tiled Affine Backgrounds and copy them into the affine folder.<br>
+Convert_Backgrounds - this Batch file will convert all the graphics in the BMP folder into Tiled Backgrounds and copy them into the backgrounds folder.<br>
+Convert_bitmap8 - this Batch file will convert all the graphics in the BMP folder into 8-bit Bitmaps and copy them into the bitmap8 folder.<br>
+Convert_bitmap8_shared - this Batch file will convert all the graphics in the BMP folder into 8-bit Bitmaps with a shared palette and copy them into the bitmap8 folder.
+Convert_bitmap16 - this Batch file will convert all the graphics in the BMP folder into 16-bit Bitmaps and copy them into the bitmap16 folder.<br>
+Convert_CMaps - this Batch file will convert all the graphics in the BMP folder into Collision Maps and copy them into the cmaps folder.<br>
+Convert_Fonts - this Batch file will convert fonts and copy them to the fonts folder.<br>
+Convert_Sprites - this Batch file will convert all the graphics in the BMP folder into DS-Compatible Sprites and copy them into the sprites folder.<br>
+Convert_Sprites_autopal - this Batch file will convert all the graphics in the BMP folder into DS-Compatible Sprites with a shared palette and copy them into the sprites folder.</p>
+
+As you can see, with NightFox Lib’s pre-prepared Batch converter files, converting resources will be a breeze!<br>
+Remember, by default, all Tiled Graphics have a transparent colour selected, and this colour is Magenta (RGB 255,0,255) – use it whenever you want parts of your graphics to be transparent as it will not appear on the hardware. <br>
+Another thing worth noting is that our Backgrounds must have sizes divisible by 256 pixels and our 2D Sprites must have sizes divisible by 8 pixels, 64 pixels being the maximum width/heigh, so keep that in mind before converting to avoid errors.<br>
+I didn’t quite know how to start off the subject of Graphics in NightFox Lib to make it approachable to anyone, so I figured that the best way to do so would be to do it methodically. <br>
+In the following few chapters I’m going to introduce the idea behind MODE’s that the DS’s 2D Engine uses, what they do and how to take the best advantage of them.<br>
+We’re going to start with MODE 0 and climb upwards until we’ve discussed them all.<br>
+Just so that nobody’s bored during these chapters, I’m also going to introduce the types of graphics most commonly used in the MODE in question, so that we get a little bit of practical and theoretical knowledge. <br>
+This chapter will be dedicated to MODE 0 of the 2D engine in NightFox. <br>
+This mode offers 4 layers of Tiled Graphics on the screen in question, and it’s likely going to be the MODE you use most commonly. <br>
+To initialize a MODE, we use the command:<br>
+<center>
+  <h3>NF_Set2D(Screen, MODE);</h3><br></center>
+Simply substitute Screen with use 0 or 1 to select the Top or Bottom one, and substitute MODE with 0, 2 or 5 – the default MODE’s of NightFox Lib.<br>
+
+Now, before we do anything else, we have to define the default Folder for our Resources, using this function:<br>
+<h3><center>NF_SetRootFolder("ROOT");</center></h3>
+Now, to use the Internal filesystem, we substitute the ROOT with NITROFS, in all other cases, we simply input the folder name and the function will enable FAT instead.<br>
+
+
+With that out of the way, we can start having fun with Tiled Graphics in our projects. <br>
+We’ll start with Backgrounds. <br>
+Before we can use any, we have to initialize the buffers for backgrounds, as NightFox streams them from NitroFS or FAT by default. <br>
+To do so, we use these functions:<br>
+<h3<center><NF_InitTiledBgBuffers();<br>
+NF_InitTiledBgSys(Screen);<br>
+</center>
+</h3>
+And again, we substitute the word Screen with the screen we are interested in – 0 or 1.<br>
+With that out of the way, we’re ready to select a background to load into VRAM.<br> 
+Our backgrounds have to be placed in the “nitrofiles” folder of our project, once they’re there, we can use this function:<br>
+
+<h3>NF_LoadTiledBg("Path", "Name", Width, Height);</h3>
+It will open the background in question, load it into RAM, attach a name to it and store the parameters of its Width and Height (divisible by 256!) so that we don’t have to remember them later on as we code. It’s pretty convenient, but our Tiled Background is not ready to be displayed yet. As we learned from the previous chapter about RAM and VRAM, we still have to copy it over to VRAM to display it. To do so, we simply use this command:
+NF_CreateTiledBg(Screen, Layer, "Name");
+As you can see, NightFox will deal with RAM-VRAM communications for us and all we really have to do is to select the Screen and Layer on which we’d like to display our background. We won’t tackle the idea of Layers for now beyond the fact that there are 4 Layers on each Screen, numbered from 0 to 3, 0 being the top-most and 3 being the bottom-most Layer.
+
+Okay, so we have our Background ready to be displayed – it’s going to appear on our screen right after the next swiWaitForVBlank(); - perfect!
+
+Just to make sure, let's review our sample code, shall we?
+<code>
+  /*
+#############################################
+##DS Programming Guide - From Zero To Hero!##
+####Example #2 - MODE 0 Tiled Backgrounds####
+#############################################
+*/
+ 
+/*
+############
+##Includes##
+############
+*/
+ 
+// Include C
+#include <stdio.h>
+ 
+// Include Libnds
+#include <nds.h>
+ 
+// Include NFLib
+#include <nf_lib.h>
+/*
+###############
+##Main(){...}##
+###############
+*/
+ 
+int main(int argc, char **argv) {
+ 
+// Turn on MODE 0 on the Top Screen
+NF_Set2D(0, 0);
+ 
+// Set the Root Folder
+NF_SetRootFolder("NITROFS");
+ 
+// Initialize the Tiled Backgrounds System on the Top Screen
+NF_InitTiledBgBuffers();
+NF_InitTiledBgSys(0);
+ 
+// Load the Tiled Background
+NF_LoadTiledBg("Background", "Background", 256, 256);
+NF_CreateTiledBg(0, 3, "Background");
+ 
+while(1){
+swiWaitForVBlank();
+}
+return 0;
+}
+</code>
+
+Let's compile this... and... SUCCESS! <br>
+  We've just learned how to create, load and display Tiled Backgrounds! <br>
+  Just to make sure that everything is understandable, I'll attach the Example compile folder so that everyone can review the source:</p>
+
+  <a href="https://www.mediafire.com/file/lg6tvxd78gw3kly/Example2.rar/file">http://www.mediafire...lg6tvxd78gw3kly</a></p>
+
+I hope that everybody had fun and stay tuned for the next chapters, which will concern Sprites! Foxi4 over and out! </p>
 </body>
   </font>
     </td></tr></table></center>
