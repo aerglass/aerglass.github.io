@@ -170,55 +170,55 @@ As you can see, NightFox will deal with RAM-VRAM communications for us and all w
 Okay, so we have our Background ready to be displayed – it’s going to appear on our screen right after the next swiWaitForVBlank(); - perfect!
 
 Just to make sure, let's review our sample code, shall we?
-<code>
-  /*
-#############################################
-##DS Programming Guide - From Zero To Hero!##
-####Example #2 - MODE 0 Tiled Backgrounds####
-#############################################
-*/
+<code><br>
+  /*<br>
+#############################################<br>
+##DS Programming Guide - From Zero To Hero!##<br>
+####Example #2 - MODE 0 Tiled Backgrounds####<br>
+#############################################<br>
+  */</p>
  
-/*
-############
-##Includes##
-############
-*/
+/*<br>
+############<br>
+##Includes##<br>
+############<br>
+*/</p>
  
-// Include C
-#include <stdio.h>
+// Include C<br>
+#include <stdio.h></p>
  
-// Include Libnds
-#include <nds.h>
+// Include Libnds<br>
+#include <nds.h><br>
  
-// Include NFLib
-#include <nf_lib.h>
-/*
-###############
-##Main(){...}##
-###############
-*/
+// Include NFLib<br>
+#include <nf_lib.h><br>
+/*<br>
+###############<br>
+##Main(){...}##<br>
+###############<br>
+*/</p>
  
-int main(int argc, char **argv) {
+int main(int argc, char **argv) {</p>
  
-// Turn on MODE 0 on the Top Screen
-NF_Set2D(0, 0);
+// Turn on MODE 0 on the Top Screen<br>
+NF_Set2D(0, 0);</p>
  
-// Set the Root Folder
-NF_SetRootFolder("NITROFS");
+// Set the Root Folder<br>
+NF_SetRootFolder("NITROFS");</p>
  
-// Initialize the Tiled Backgrounds System on the Top Screen
-NF_InitTiledBgBuffers();
-NF_InitTiledBgSys(0);
+// Initialize the Tiled Backgrounds System on the Top Screen<br>
+NF_InitTiledBgBuffers();<br>
+NF_InitTiledBgSys(0);</p>
  
-// Load the Tiled Background
-NF_LoadTiledBg("Background", "Background", 256, 256);
-NF_CreateTiledBg(0, 3, "Background");
+// Load the Tiled Background<br>
+NF_LoadTiledBg("Background", "Background", 256, 256);<br>
+NF_CreateTiledBg(0, 3, "Background");</p>
  
-while(1){
-swiWaitForVBlank();
-}
-return 0;
-}
+while(1){<br>
+swiWaitForVBlank();<br>
+}<br>
+return 0;<br>
+}<br>
 </code>
 
 Let's compile this... and... SUCCESS! <br>
