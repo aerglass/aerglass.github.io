@@ -34,12 +34,13 @@ a:active {
       <li> Day 1. Introduction </li>
       <li> Day 2. Setting up everything </li>
       <li> Day 3. Hello World! </li>
-      <li> Day 4. convert sprites and backgrounds</li>
-      <li> Day 5. understanding vram and ram </li>
-      <li> Day 6. Backgrounds </li>
-      <li> Day 7. Sprites </li>
-      <li> Day 8. Music </li>
-      <li> Day 9. Colisions </li>
+      <li> Day 4. Use of libnds </li>
+      <li> Day 5. convert sprites and backgrounds</li>
+      <li> Day 6. understanding vram and ram </li>
+      <li> Day 7. Backgrounds </li>
+      <li> Day 8. Sprites </li>
+      <li> Day 9. Music </li>
+      <li> Day 10. Colisions </li>
     </ui>
     <table bgcolor="red"><tr><td>DS IS COMPLEX, THIS GUIDE IS NOT RESPONSABLE IF YOUR COMPUTER OR DS DIES. </tr></td></table>
       <table bgcolor="grau"><tr><td>This guide is based on this <a href="https://gbatemp.net/threads/ds-programming-for-newbies.322106/">one, on GBATEMP</a><br>
@@ -75,7 +76,130 @@ it should make a .nds file in the folder.<br>
 decompress the DesMuMe <br>
 load the .nds file to DesMume, it should appear "Hello World" <br>
 DesMuMe is a Nintendo DS Emulator, We will use it ALOT </p>
-<h1> Day 5:RAM and VRAM </h1></p>
+<h1> Day 5:Libnds </h1> </p>
+With the basic introduction of C behind us, I believe we're ready for what you've all been waiting for – the basics of libnds.
+
+Until now, even with everything we've learned so-far, we were unable to utilize any user input whatsoever, as we didn't know how to use the Keys or the Touchscreen – these are platform-specific afterall.<br>
+Today we're going to learn how to detect the state of Keys and the Touchscreen and how to use it.<br>
+Let's start with Keys. First and foremost, to use Key Input, we need to scan for their use.<br>
+To do that, we place the function:</p>
+<h3><strong><center>scanKeys();</center></strong></h3></p>
+
+Within the main while(){...} loop of the program. This will initialize the Key scanner and thus allow us to use them as a method of input.<br>
+
+Their use is divided into two portions – Key Detection and State Detection.<br>
+These are of equal importance – one cannot work without the other, so keep that in mind!<br>
+
+Keys are neatly put into an easy-to-remember structure of Enumerators.<br>
+We're not going to tackle what exactly Enumerators are, all you need to know that each Key corresponds to a value, the Lid and Touchscreen taps are also treated as a Key. <br>
+This is the list of all Keys you can use:</p>
+Code:<br>
+<center><strong><h3>
+KEY_A = BIT(0)<br>
+KEY_B = BIT(1)<br>
+KEY_SELECT = BIT(2)<br>
+KEY_START = BIT(3)<br>
+KEY_RIGHT = BIT(4)<br>
+KEY_LEFT = BIT(5)<br>
+KEY_UP = BIT(6)<br>
+KEY_DOWN = BIT(7)<br>
+KEY_R = BIT(8)<br>
+KEY_L = BIT(9)<br>
+KEY_X = BIT(10)<br>
+KEY_Y = BIT(11)<br>
+KEY_TOUCH = BIT(12) (Refers to touchscreen tapping)<br>
+KEY_LID = BIT(13)<br>
+  </code>
+
+As you can see, each Key has its respective Name.<br>
+Using those we can create Statements that will depend on their values, but not just them alone.<br>
+We will also require their State, and for that we have a set of useful functions:<br>
+
+Code:<br>
+<h3><code></strong>
+keysDown();
+keysHeld();
+keysUp();
+keysCurrent();
+  </code></strong></h3></p>
+
+Down, Held and Up are relatively self-explainatory – Down is the State occouring directly after a button is pressed, Held is a State that occours when the key is pressed and kept down and Up is a State that occours when the key is released. <br>
+All three return different values when different keys enter the specified state.<br>
+Current is an interesting State, as rather then Returning a value to a specific State immediatelly, it first detects which state it is.<br>
+Now that we know that, we're able to compose our first condition based on Key input!</p>
+
+<center><h3><strong>
+if(KEY_A & keysHeld()){
+Statements;
+}
+  </strong></h3></center>
+This if statement is quite clear – if the A button is held down, the Statements within the { } will be executed. <br>
+The Statements will be executed until the State of the Key changes, in this case, when it is Released. <br>
+You can do the exact same thing with any combination of button + state. <br>
+To make it easier and more sensible, it's worth to declare some special Variables before you begin your program<br>
+
+Code:<br>
+<code><br>
+u16 Pressed;<br>
+u16 Held;<br>
+u16 Released;<br>
+</code></p>
+
+...and update them at the beginning of every while(1); cycle.<br>
+
+Code:<br>
+<code>
+Pressed = keysDown();<br>
+Held = keysHeld();<br>
+Released = keysUp();<br>
+</code>
+
+This way we save valuable calculation power by checking the States of buttons once each frame at the beginning of the program rather then with each button press.</p>
+<h3><center><strong>
+if(KEY_A & Held){<br>
+Statements;<br>
+}<br>
+  </strong></center></h3></p>
+Now that we've covered Keys we can safetly progress to the Touchscreen which is also quite simple to use. <br>
+We'll start by declaring a Variable to hold all the data recovered from the screen:</p>
+
+<center><h3><strong>touchPosition TouchStructure;</strong><h3></center>
+
+We are yet unfamiliar with the type touchPosition - it's a type declared within libnds and platform-specific. <br>
+  It's a Structure type and holds the data on numerous stylus readings:</p>
+cod
+<code>
+u16 px (Pixel X value)<br>
+u16 py (Pixel Y value)<br>
+u16 rawx (Raw X value)<br>
+u16 rawy (Raw Y value)<br>
+u16 z1 (Raw cross panel resistance)<br>
+u16 z2 (Raw cross panel resistance)<br>
+</code>
+
+rawx and rawy are exactly what their names imply - raw values read from the screen. <br>
+  What makes them raw? Well, they're not exactly user-friendly as they are not translated to pixel positions on the screen, <br>
+they're large and require further calculations to be used in pointing and clicking, however they are read much quicker then other values, thus are useful at for example implementing swiping and dragging with the stylus. px <br>
+and py values are calculated from raw values and refer to specific pixels on the screen. The screen is 192 pixels high and 256 pixels wide, with the top left-hand corner marked as pixel 0,0 - <br>
+knowing this alone will help you use the px and py values successfuly. As for z1 and z2 values, they refer to the panel resistance and are useful (from what I know) at reading the pressure, however it's not something you'd normally use and thus we won't talk much about them.<br>
+You can use any name you feel comfortable with in this declaration rather then "TouchStructure", it doesn't in any way influence the readouts...<br>
+ which we're not getting yet anyways.<br>
+To recieve readouts of the stylus position, we need to initialize a screen scan function at the beginning of our main while() loop as we did with the keys. <br>
+In case of the touchscreen, we use:</p>
+
+<h3><center><strong>touchRead(&TouchStructure);</strong></center></h3></p>
+
+Sigh, I know what you're going to ask, oh-ever-so-inquisitive reader. "What's that & doing there? That shouldn't be there, right?".<br>
+Well, yeah, it should. This "&" refers to a Pointer, you don't know what those are yet and for now you don't need to.<br>
+What I will tell you though is that to save space and calculation power, rather then using the whole structure inside this function, we just Point at the location of the structure in memory with a Pointer.<br>
+After using this function, all the readouts from the touchscreen will be immediatelly sent to the TouchVariable structure, out of which we'll be able to draw elements as we normally would with a Structure, as we already know its elements.<br>
+For example, the position of the Stylus Horizontal-wise and pixel-wise will be kept under TouchVariable.px.<br>
+This concludes this Chapter, I hope it was a pleasant read. <br>
+I'll do my best to include a nice excersize concerning Key and Touchscreen use soon, for now, experiment on your own and if you have any questions or if you'd like to boast a bit with your newly-written code, go ahead and post! It'll only get better from now on! :D <br>
+Foxi over and out!</p>
+ 
+
+<h1> Day 6:RAM and VRAM </h1></p>
 Before we properly dive into the use of graphics and various other resources, first we need to learn a bit about how the DS manages memory. <br>
 As you may or may not know, the DS has 4MB of Main RAM memory, shared between its two processors – the ARM9 and the ARM7. <br>
 RAM is where your entire Binary will be stored during its execution and naturally it has to be used efficiently, as it isn’t a whole lot of space. <br>
@@ -91,7 +215,7 @@ This should help you imagine how the system works. Again, conveniently, NightFox
 
 To combat this inheritent problem of lack of space, Tiled graphics have been introduced back in the olden days. <br>
 They take much less space than standard backgrounds, and these will be the first for us to tackle – specifically, tiled backgrounds converted with the GRIT (GBA Raster Image Transmogrifier) tool. <br>
-<h1> Day 6: Backgrounds </h1></p>
+<h1> Day 7: Backgrounds </h1></p>
 I specifically picked NightFox Lib as the library of choice for this guide, simply because its use is incredibly simple and because the library is still in active developed, not to mention that it's well-documented. <br>
 I believe that we will all get the quickest and best results if we focus on it as our graphics library, so let's get to it.</p>
 
