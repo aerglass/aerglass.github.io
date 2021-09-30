@@ -154,9 +154,9 @@ And again, we substitute the word Screen with the screen we are interested in �
 With that out of the way, we’re ready to select a background to load into VRAM.<br> 
 Our backgrounds have to be placed in the “nitrofiles” folder of our project, once they’re there, we can use this function:<br>
 
-<h3>NF_LoadTiledBg("Path", "Name", Width, Height);</h3>
+<h3><center><strong>NF_LoadTiledBg("Path", "Name", Width, Height);</strong></center></h3>
 It will open the background in question, load it into RAM, attach a name to it and store the parameters of its Width and Height (divisible by 256!) so that we don’t have to remember them later on as we code. It’s pretty convenient, but our Tiled Background is not ready to be displayed yet. As we learned from the previous chapter about RAM and VRAM, we still have to copy it over to VRAM to display it. To do so, we simply use this command:
-NF_CreateTiledBg(Screen, Layer, "Name");
+<h3><center><strong>NF_CreateTiledBg(Screen, Layer, "Name");</strong></center></h3>
 As you can see, NightFox will deal with RAM-VRAM communications for us and all we really have to do is to select the Screen and Layer on which we’d like to display our background. We won’t tackle the idea of Layers for now beyond the fact that there are 4 Layers on each Screen, numbered from 0 to 3, 0 being the top-most and 3 being the bottom-most Layer.
 
 Okay, so we have our Background ready to be displayed – it’s going to appear on our screen right after the next swiWaitForVBlank(); - perfect!
