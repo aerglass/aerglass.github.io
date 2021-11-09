@@ -48,32 +48,32 @@ done. Now lets start doing stuff with <code>C/C++</code></p>
 <div class="C">
   <h1><code> C</code> stuff</h1></p>
 This is how the template main.c file should look like:
-<code>
-  /*
-PA2lib Template.
-This is ready to use, no need for installation or anything else.
-Enjoy making games
-*/
-#include &lt;stdio.h&gt;				// Include C
-#include &lt;nds.h&gt;				//include Libnds
-#include &lt;PA_lib.h&gt;			 	//include PA2lib
+<code><br>
+  /*<br>
+PA2lib Template.<br>
+This is ready to use, no need for installation or anything else.<br>
+Enjoy making games<br>
+*/<br>
+#include &lt;stdio.h&gt;				// Include C<br>
+#include &lt;nds.h&gt;				//include Libnds<br>
+#include &lt;PA_lib.h&gt;			 	//include PA2lib</p>
 
-//main block of the program.
-int main(int argc, char **argv) {
-	consoleDemoInit();			// Inits text of the console
-	consoleClear();				// Clear
-	setBrightness(3, 0);			// put brightness to 3.
+//main block of the program.<br>
+int main(int argc, char **argv) {<br>
+	consoleDemoInit();			// Inits text of the console<br>
+	consoleClear();				// Clear<br>
+	setBrightness(3, 0);			// put brightness to 3.</p>
 	
-	iprintf("\n Hello World!"); 		//print hello world
-	//loop for ever.
-	while(1) {
-		scanKeys();			//scan keys
-		int Held = keysHeld();		//keys variable
-		if(Held & KEY_START) return 0; 	//if the start button is held, turn off the console.
-		SPA_Flush();			//update everything (oam, text, swiwaitforvblank)
-	}
-	return 0; 				//turn off
-}
+	iprintf("\n Hello World!"); 		//print hello world<br>
+	//loop for ever.<br>
+	while(1) {<br>
+		scanKeys();			//scan keys<br>
+		int Held = keysHeld();		//keys variable<br>
+		if(Held & KEY_START) return 0; 	//if the start button is held, turn off the console.<br>
+		SPA_Flush();			//update everything (oam, text, swiwaitforvblank)<br>
+	}<br>
+	return 0; 				//turn off<br>
+}<br>
   </code>
 
 </div>
