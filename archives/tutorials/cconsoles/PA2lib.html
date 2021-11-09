@@ -1,6 +1,7 @@
 <html>
-  <head> Easy PA2lib guide </head></p>
-  <body>
+  <head> <h1>Easy PA2lib guide </h1></head></p>
+<font face ="arial">
+   <body bgcolor="#1ecbe1" text="white">
 This guide will teach you how to use PA2lib + Simple PA2Lib</p>
 Features of PA2lib:<br>
 Very small (less than a mb)<br>
@@ -16,6 +17,65 @@ learning libnds is somewhat complex.</p>
 <h1>What is Simple PA2Lib? </h1></p>
 is a wrapper that simplifies the usage of PA2lib, however, this is not needed, and you can use PA2Lib on your own.<br>
 I recommend PA2Lib + Simple PA2Lib since its easier.</p>
+<div class="installation">
+  <h1> Part one, installing stuff. </h1></p>
+PA2lib (PA2 is how we are going to call it on the guide) is very simple to install. <br>
+go to the github of AerGlass and then go into PA2Lib, or if you are lazy then <a href ="https://github.com/AerGlass/PA2lib">Here is the link lol</a><br>
+Download a DS Emulator, <a href="https://problemkaputt.de/gba.htm">no$gba is the best (gaming version). </a><br>
+<a href="https://github.com/devkitPro/installer/releases">next download devkitpro updater.</a><br>
+install it, i guess.</p>
+<img src="imgs/devkitproupdater1.JPG"><br>
+<img src="imgs/devkitproupdater2.JPG"><br>
+<img src="imgs/devkitproupdater3.JPG"></p>
+after installing devkitpro, try compiling the libnds examples. <br>
+open cmd and type this:<br>
+<code> cd C:/devkitpro/examples/nds/hello_world </code><br>
+After pressing enter, type <code>make</code><br>
+it will compile your code.<br>
+Next open it with the emulator (in this case, no$gba), this should display on screen </p>
+<img src="imgs/ds_helloworld.jpg"></p>
+Now lets install PA2Lib.<br>
+if you preffer stability over new features, then use the latest version from releases. <br>
+if you preffer new features over stability, then compile the lib yourself.<br>
+<h1>how to compile the lib (dificult, not recommended)</h1></p>
+<a href ="https://github.com/AerGlass/PA2lib">download the latest version </a>(press code, then download as a zip)<br>
+extract the zip and enter to the folder PA2, and then doubleclick the <code>makelib.bat</code> file, it will compile the lib<br>
+<h1> Installing for releases (recommended)</h1></p>
+Go to releases and download the latest stable source code. <br>
+extract the pack with winrar or 7zip, then enter to the template folder<br>
+done. Now lets start doing stuff with <code>C/C++</code></p>
+</div>
+<div class="C">
+  <h1><code> C</code> stuff</h1></p>
+This is how the template main.c file should look like:
+<code>
+  /*
+PA2lib Template.
+This is ready to use, no need for installation or anything else.
+Enjoy making games
+*/
+#include &lt;stdio.h&gt;				// Include C
+#include &lt;nds.h&gt;				//include Libnds
+#include &lt;PA_lib.h&gt;			 	//include PA2lib
 
+//main block of the program.
+int main(int argc, char **argv) {
+	consoleDemoInit();			// Inits text of the console
+	consoleClear();				// Clear
+	setBrightness(3, 0);			// put brightness to 3.
+	
+	iprintf("\n Hello World!"); 		//print hello world
+	//loop for ever.
+	while(1) {
+		scanKeys();			//scan keys
+		int Held = keysHeld();		//keys variable
+		if(Held & KEY_START) return 0; 	//if the start button is held, turn off the console.
+		SPA_Flush();			//update everything (oam, text, swiwaitforvblank)
+	}
+	return 0; 				//turn off
+}
+  </code>
+
+</div>
 </body>
 </html>
