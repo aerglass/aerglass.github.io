@@ -1,0 +1,28 @@
+body{
+    background-color: rgb(54, 54, 54);
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+}
+@keyframes fadeIn{
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+}
+h1{
+    animation-name: fadeIn;
+    animation-duration: 5s;
+}
+.text{
+    position: relative;
+    animation-name: fadeIn;
+    animation-duration: 5s;
+    position: relative;
+}
+.bottom{
+    animation-name: fadeIn;
+    animation-duration: 5s;
+    text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
